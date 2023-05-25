@@ -1,0 +1,307 @@
+﻿<UserControl x:Class="InicioSesion.Views.UsuariosView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:InicioSesion.Views"
+             xmlns:vm="clr-namespace:InicioSesion.ViewModels"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             mc:Ignorable="d"
+             d:DesignHeight="650"
+             Name="ventana"
+             FontSize="20"
+             d:DesignWidth="1000">
+    <UserControl.DataContext>
+        <vm:UsuariosViewModel />
+    </UserControl.DataContext>
+    
+    
+    <UserControl.Resources>
+        <local:AgregarUSView x:Key="Agregar"/>
+        <DockPanel x:Key="Editar">
+            <Border Padding="10"
+                    DockPanel.Dock="Top"
+                    BorderThickness="0,0,0,2"
+                    BorderBrush="Black">
+                <TextBlock FontSize="20">Editar usuario</TextBlock>
+            </Border>
+            <StackPanel Margin="20">
+                <Label>Nombre:</Label>
+                <TextBox Text="{Binding Usuario.Nombre}"></TextBox>
+                <Label>Correo electrónico:</Label>
+                <TextBox Text="{Binding Usuario.Correo}"></TextBox>
+                <WrapPanel HorizontalAlignment="Center"
+                           Margin="20">
+                    <Button Padding="10,5"
+                            Command="{Binding GuardarCommand}">Guardar</Button>
+                    <Button Padding="10,5"
+                            Command="{Binding CambiarVistaCommand}"
+                            CommandParameter="Ver"
+                            Margin="10,0,0,0">Cancelar</Button>
+                </WrapPanel>
+            </StackPanel>
+        </DockPanel>
+        <DockPanel x:Key="Ver"
+                   Background="GhostWhite">
+            <Border Padding="10"
+                    DockPanel.Dock="Top"
+                    BorderThickness="0,0,0,2"
+                    BorderBrush="Black"
+                    Margin="10,0,0,0">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right"
+                            Padding="10,5"
+                            Margin="30,0,20,0"
+                            Foreground="White"
+                            CommandParameter="Agregar"
+                            Command="{Binding VerGuardarCommand}">Agregar</Button>
+                    <TextBlock FontSize="20">Lista de Usuarios</TextBlock>
+                </DockPanel>
+            </Border>
+            <TextBlock DockPanel.Dock="Bottom"
+                       Margin="10,0,0,0">
+                <Run Text="Total usuarios: " />
+            <Run Text="{Binding TotalEmpleados}"/></TextBlock>
+            <DataGrid SelectionMode="Single"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserReorderColumns="False"
+                      CanUserResizeColumns="False"
+                      IsReadOnly="True"
+                      AutoGenerateColumns="False"
+                      ItemsSource="{Binding ListaUsuarios}"
+                      Margin="20">
+                <DataGrid.Columns>
+                    <DataGridTextColumn FontSize="20"
+                                        Binding="{Binding Nombre}"
+                                        Header="Nombre"
+                                        Width=".4*"></DataGridTextColumn>
+                    <DataGridTextColumn FontSize="20"
+                                        Binding="{Binding Correo}"
+                                        Header="Correo electrónico"
+                                        Width=".4*"></DataGridTextColumn>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <!--<TextBlock FontSize="20">
+                                    <Hyperlink Command="{Binding ElementName=ventana, 
+                                        Path=DataContext.EditarCommand}"
+                                                                    CommandParameter="{Binding .}"
+                                                                    Foreground="Black">Editar</Hyperlink>
+                                </TextBlock>-->
+                                <Button Width="40"
+                                        Height="40"
+                                        Padding="0"
+                                        Command="{Binding ElementName=ventana, 
+                                        Path=DataContext.VerEditarCommand}"
+                                        CommandParameter="{Binding .}">
+                                    <fa:ImageAwesome Icon="Pencil"
+                                                     Width="25"
+                                                     Foreground="White"
+                                                     Height="25" />
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <!--<TextBlock FontSize="20"><Hyperlink Click="Hyperlink_Click"
+                                                                    CommandParameter="{Binding .}"
+                                                                    Foreground="Black">Eliminar</Hyperlink></TextBlock>-->
+                                <Button Width="40"
+                                        Height="40"
+                                        Padding="0"
+                                        Background="red"
+                                        BorderBrush="red"
+                                        Command="{Binding ElementName=ventana, 
+                                        Path=DataContext.VerEliminarCommand}"
+                                        CommandParameter="{Binding .}">
+                                    <fa:ImageAwesome Icon="Trash"
+                                                     Width="25"
+                                                     Foreground="White"
+                                                     Height="25" />
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Width="40"
+                                        Height="40"
+                                        Padding="0"
+                                        Foreground="White"
+                                        CommandParameter="{Binding .}"
+                                        Command="{Binding ElementName=ventana, 
+                                        Path=DataContext.VerEnviarCorreoCommand}">
+                                    <fa:ImageAwesome Icon="Envelope"
+                                                     Width="25"
+                                                     Foreground="White" />
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <!--<TextBlock FontSize="20"><Hyperlink Click="Hyperlink_Click"
+                                                                    CommandParameter="{Binding .}"
+                                                                    Foreground="Black">Eliminar</Hyperlink></TextBlock>-->
+                                <Button Width="40"
+                                        Height="40"
+                                        Padding="0"
+                                        Background="Violet"
+                                        BorderBrush="Violet"
+                                        Command="{Binding ElementName=ventana, 
+                                        Path=DataContext.VerBitacorasCommand}"
+                                        CommandParameter="{Binding .}">
+                                    <fa:ImageAwesome Icon="Bitcoin"
+                                                     Width="25"
+                                                     Foreground="White"
+                                                     Height="25" />
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+        <DockPanel x:Key="VerBitacoras">
+            <Border Padding="10"
+                    DockPanel.Dock="Top"
+                    BorderThickness="0,0,0,2"
+                    BorderBrush="Black">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right"
+                            Padding="10,5"
+                            Command="{Binding CambiarVistaCommand}"
+                            CommandParameter="Ver">Regresar</Button>
+                    <TextBlock FontSize="20">Lista de bitacoras</TextBlock>
+                </DockPanel>
+            </Border>
+            <DataGrid SelectionMode="Single"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserReorderColumns="False"
+                      CanUserResizeColumns="False"
+                      IsReadOnly="True"
+                      AutoGenerateColumns="False"
+                      ItemsSource="{Binding Usuario.Bitacoras}"
+                      Margin="20">
+                <DataGrid.Columns>
+                    <DataGridTextColumn FontSize="20"
+                                        Binding="{Binding Observaciones }"
+                                        Header="Correo electrónico"
+                                        Width="0.6*" />
+                    <DataGridTextColumn Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}"
+                                        Header="Fecha de acceso"
+                                        FontSize="20"
+                                        Width=".2*" />
+                    <DataGridTextColumn Binding="{Binding Fecha, StringFormat=H:mm:ss tt}"
+                                        Header="Hora de acceso"
+                                        Width=".2*"
+                                        FontSize="20" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+        <local:CorreoView x:Key="Correo" />
+    </UserControl.Resources>
+    <Grid>
+        <ContentControl Margin="0,10,0,0">
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Setter Property="Content"
+                            Value="{StaticResource Ver}"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Modo}"
+                                     Value="Ver">
+                            <Setter Property="Content"
+                                    Value="{StaticResource Ver}"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Modo}"
+                                     Value="Editar">
+                            <Setter Property="Content"
+                                    Value="{StaticResource Editar}"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Modo}"
+                                     Value="Agregar">
+                            <Setter Property="Content"
+                                    Value="{StaticResource Agregar}"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Modo}"
+                                     Value="VerBitacoras">
+                            <Setter Property="Content"
+                                    Value="{StaticResource VerBitacoras}"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Modo}"
+                                     Value="Correo">
+                            <Setter Property="Content"
+                                    Value="{StaticResource Correo}"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+        <Grid>
+            <Grid.Resources>
+                <Style TargetType="{x:Type Grid}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding VerEliminarBool}"
+                                     Value="False">
+                            <Setter Property="Visibility"
+                                    Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding VerEliminarBool}"
+                                     Value="True">
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Resources>
+            <Border Background="Black"
+                    Opacity=".4" />
+            <Border Background="White"
+                    Width="700"
+                    BorderBrush="{StaticResource MaterialDesignDarkBackground}"
+                    BorderThickness="5"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Height="400"
+                    CornerRadius="10">
+                <StackPanel Margin="0"
+                            VerticalAlignment="Center">
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="30">
+                        <Run Text="¿Desea eliminar este usuario: " />
+                        <Run Text="{Binding Usuario.Nombre}"
+                             Foreground="red" />
+                        <Run Text="?" /></TextBlock>
+                    <fa:ImageAwesome Icon="UserCircleOutline"
+                                     Width="150"
+                                     Margin="0,15"
+                                     Foreground="{StaticResource MaterialDesignDarkBackground}" />
+                    <WrapPanel HorizontalAlignment="Center"
+                               Margin="20">
+                        <Button Padding="10,5"
+                                FontSize="20"
+                                Foreground="White"
+                                Width="150"
+                                Height="50"
+                                Command="{Binding EliminarCommand}">Eliminar</Button>
+                        <Button Padding="10,5"
+                                FontSize="20"
+                                Foreground="White"
+                                Width="150"
+                                Height="50"
+                                Background="Red"
+                                Command="{Binding CambiarVistaCommand}"
+                                CommandParameter="CancelarEliminar"
+                                Margin="10,0,0,0">Cancelar</Button>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

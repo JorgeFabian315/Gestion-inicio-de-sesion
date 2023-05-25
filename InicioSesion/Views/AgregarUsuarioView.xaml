@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="InicioSesion.Views.AgregarUsuarioView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:InicioSesion.Views"
+             xmlns:vm="clr-namespace:InicioSesion.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" 
+             FontSize="20"
+             d:DesignWidth="800">
+    <DockPanel>
+        <DockPanel.Resources>
+            <Style TargetType="DockPanel">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Window}
+                        ,Path=DataContext}" Value="">
+                        <Setter Property="Background"
+                                Value="Red" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </DockPanel.Resources>
+        <Border Padding="10"
+                DockPanel.Dock="Top"
+                BorderThickness="0,0,0,2"
+                BorderBrush="Black">
+            <TextBlock FontSize="20">Agregar usuario</TextBlock>
+        </Border>
+        <StackPanel Margin="20">
+            <Label Foreground="Black" 
+                   >Nombre:</Label>
+            <TextBox Margin="0,3"
+                     Text="{Binding Usuario.Nombre}"></TextBox>
+            <Label Foreground="Black"
+                  >Correo electrónico:</Label>
+            <TextBox Margin="0,3"
+                     Text="{Binding Usuario.Correo}"></TextBox>
+            <Label Foreground="Black"
+                   >Contraseña:</Label>
+            <TextBox Margin="0,3"
+                     Text="{Binding Usuario.Contrasena}"></TextBox>
+            <TextBlock 
+                       Text="{Binding Error}"
+                       FontSize="15"
+                       Margin="0,20,0,10"
+                       Foreground="Red"
+                       HorizontalAlignment="Center"></TextBlock>
+            <WrapPanel HorizontalAlignment="Center"
+                       Margin="20,0,20,0"
+                       >
+                <Button Padding="10,5"
+                        Width="100"
+                        Height="50"
+                        Foreground="GhostWhite"
+                        FontSize="20"
+                        Command="{Binding CrearNuevoUsuarioCommand}">Agregar</Button>
+                <Button Padding="10,5"
+                        Width="100"
+                        Height="50"
+                        Foreground="GhostWhite"
+                        FontSize="20"
+                        Command="{Binding CerrarSesionCommand}"
+                        Margin="10,0,0,0">
+                    Cancelar</Button>
+                
+            </WrapPanel>
+        </StackPanel>
+    </DockPanel>
+</UserControl>
