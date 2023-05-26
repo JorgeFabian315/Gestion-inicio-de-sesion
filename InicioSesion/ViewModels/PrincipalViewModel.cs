@@ -1,9 +1,11 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using InicioSesion.Catalogos;
 using InicioSesion.Models;
+using InicioSesion.Validaciones;
 using InicioSesion.Views;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System;
+using FluentValidation;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -16,6 +18,7 @@ using System.Web.Http;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Collections.ObjectModel;
 
 namespace InicioSesion.ViewModels
 {
@@ -24,7 +27,10 @@ namespace InicioSesion.ViewModels
         public Usuarios? Usuario { get; set; }
         public bool EstaConectado => Usuario.Id != 0;
 
+        public ObservableCollection<Roles> ListaRoles { get; set; } = new();
+
         UsuariosCatalogo cusuario = new();
+        RolesCatalogo crol = new();
 
         public string Error { get; set; } = "";
         public UserControl Vista { get; set; }
@@ -33,11 +39,12 @@ namespace InicioSesion.ViewModels
 
         LoginView loginview;
 
+        UsuarioValidator validator;
         public ICommand IniciarSesionCommand { get; set; }
         public ICommand CerrarSesionCommand { get; set; }
         public ICommand CrearCuentaCommand { get; set; }
 
-        public ICommand CrearNuevoUsuarioCommand => new RelayCommand(CrearNuevoUsuario);
+        public ICommand CrearNuevoUsuarioCommand => new RelayCommand<int>(CrearNuevoUsuario);
         public ICommand VerCambiarContraseñaCommand => new RelayCommand(VerCambiarContraseña);
         public ICommand CambiarContraseñaCommand => new RelayCommand(CambiarContraseña);
 
@@ -69,20 +76,24 @@ namespace InicioSesion.ViewModels
             }
         }
 
-        private void CrearNuevoUsuario()
+        private void CrearNuevoUsuario(int id)
         {
             if (Usuario != null)
             {
+                validator = new();
+                var result = validator.Validate(Usuario,
+                    option => option.IncludeAllRuleSets());
                 Error = "";
-                if (cusuario.ValidarUsuario(Usuario, out List<string> lista))
+                if (result.IsValid)
                 {
+                    Usuario.IdRol = id;
                     cusuario.Agregar(Usuario);
                     Vista = new UsuariosView();
                 }
                 else
                 {
-                    foreach (var item in lista)
-                        Error = $"{Error} {item} {Environment.NewLine}";
+                    foreach (var error in result.Errors)
+                        Error = $"{Error} {error} {Environment.NewLine}";
                 }
 
                 Actualizar();
@@ -100,6 +111,7 @@ namespace InicioSesion.ViewModels
                 DataContext = this
             };
             Vista = loginview;
+            GetRoles();
         }
         private void CrearCuenta()
         {
@@ -125,10 +137,12 @@ namespace InicioSesion.ViewModels
             {
 
                 Error = "";
+                validator = new();
+                var result = validator.Validate(Usuario, option=> option.IncludeRuleSets("Contraseña", "Correo"));
 
-                if (cusuario.ValidarInicio(Usuario, out List<string> lista))
+                if (result.IsValid)
                 {
-                    var inicio = cusuario.spIniciarSesion(Usuario.Correo, Usuario.Contrasena);
+                    var inicio =  cusuario.spIniciarSesion(Usuario.Correo, Usuario.Contrasena);
 
                     if (inicio == 1)
                     {
@@ -149,7 +163,7 @@ namespace InicioSesion.ViewModels
                 }
                 else
                 {
-                    foreach (var item in lista)
+                    foreach (var item in result.Errors)
                     {
                         Error = $"{Error} {item} {Environment.NewLine}";
                     }
@@ -164,6 +178,17 @@ namespace InicioSesion.ViewModels
         private void AccionesUsuarioCapturista()
         {
             Vista = new UsuariosView() { };
+        }
+
+        public void GetRoles()
+        {
+            ListaRoles.Clear();
+            var listarol = crol.GetRoles();
+            foreach (var item in listarol)
+            {
+                ListaRoles.Add(item);
+            }
+            Actualizar();
         }
 
         private void AccionesAdministrador()

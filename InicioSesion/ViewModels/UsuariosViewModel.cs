@@ -1,6 +1,9 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿using FluentValidation.Results;
+using FluentValidation;
+using GalaSoft.MvvmLight.Command;
 using InicioSesion.Catalogos;
 using InicioSesion.Models;
+using InicioSesion.Validaciones;
 using InicioSesion.Views;
 using System;
 using System.Collections.Generic;
@@ -36,12 +39,13 @@ namespace InicioSesion.ViewModels
         public ICommand VerGuardarCommand => new RelayCommand(VerGuardar);
         public ICommand VerEliminarCommand => new RelayCommand<Usuarios>(VerEliminar);
         public ICommand EliminarCommand => new RelayCommand(Eliminar);
-        public ICommand VerEditarCommand => new RelayCommand<Usuarios>(VerEditar);
+        public ICommand VerEditarCommand => new RelayCommand<string>(VerEditar);
         public ICommand VerEnviarCorreoCommand => new RelayCommand<Usuarios>(VerEnviarCorreo);
         public ICommand CancelarEditarCommand => new RelayCommand<Usuarios>(Cancelar);
         public ICommand VerBitacorasCommand => new RelayCommand<Usuarios>(VerBitacoras);
         public ICommand EnviarCorreoCommand => new RelayCommand<string>(EnviarCorreo);
 
+        private string nombre_viejo = string.Empty;
         public UsuariosViewModel()
         {
             GuardarCommand = new RelayCommand<int>(Guardar);
@@ -49,7 +53,7 @@ namespace InicioSesion.ViewModels
             GetRoles();
             Actualizar();
         }
-        
+
         private void VerBitacoras(Usuarios us)
         {
             Modo = "VerBitacoras";
@@ -60,6 +64,7 @@ namespace InicioSesion.ViewModels
         private void VerGuardar()
         {
             Usuario = new();
+            Error = "";
             Modo = "Agregar";
             Actualizar();
         }
@@ -70,10 +75,17 @@ namespace InicioSesion.ViewModels
             Actualizar();
         }
 
-        private void VerEditar(Usuarios obj)
+        private void VerEditar(string  correo)
         {
-            Usuario = obj;
-            Modo = "Editar";
+            Error = "";
+
+            Usuario = cusuarios.GetUsuario(correo);
+
+            if (Usuario != null)
+            {
+                Modo = "Editar";
+                nombre_viejo = Usuario.Nombre;
+            }
             Actualizar();
         }
         private void VerEnviarCorreo(Usuarios obj)
@@ -108,29 +120,39 @@ namespace InicioSesion.ViewModels
             Actualizar();
 
         }
-      public  void Guardar(int id)
+        public void Guardar(int id)
         {
             if (Usuario is not null)
             {
-                Error = "";
 
-                if (cusuarios.ValidarUsuario(Usuario, out List<string> Errores))
+                UsuarioValidator ususariovalidator = new UsuarioValidator(ListaUsuarios);
+                // Recibe el objeto que va a validar y regresa un ValidationResult
+                var result = ususariovalidator.Validate(Usuario, option => option.IncludeAllRuleSets());
+                // option.IncludeAllRuleSets() sirve para agregar todas las reglas, porque puedes dividirlas en grupos
+
+
+                Error = "";
+                if (result.IsValid)
                 {
+                    Usuario.IdRol = id;
+
+
                     if (Usuario.Id != 0)
                     {
-                        cusuarios.Editar(Usuario);
+
+                       cusuarios.Editar(Usuario, nombre_viejo);
                     }
                     else
                     {
-                        Usuario.IdRol = id;
                         cusuarios.Agregar(Usuario);
                     }
 
                     GetUsuarios();
                     Modo = "Ver";
                 }
+
                 else
-                    foreach (var error in Errores)
+                    foreach (var error in result.Errors)
                         Error = $"{Error} {error} {Environment.NewLine}";
 
                 Actualizar();
@@ -138,7 +160,7 @@ namespace InicioSesion.ViewModels
         }
         public void CambiarVista(string vista)
         {
-           
+
             if (vista == "CancelarEliminar")
                 VerEliminarBool = false;
 

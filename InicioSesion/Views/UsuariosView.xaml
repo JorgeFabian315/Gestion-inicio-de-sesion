@@ -18,29 +18,8 @@
     
     <UserControl.Resources>
         <local:AgregarUSView x:Key="Agregar"/>
-        <DockPanel x:Key="Editar">
-            <Border Padding="10"
-                    DockPanel.Dock="Top"
-                    BorderThickness="0,0,0,2"
-                    BorderBrush="Black">
-                <TextBlock FontSize="20">Editar usuario</TextBlock>
-            </Border>
-            <StackPanel Margin="20">
-                <Label>Nombre:</Label>
-                <TextBox Text="{Binding Usuario.Nombre}"></TextBox>
-                <Label>Correo electrónico:</Label>
-                <TextBox Text="{Binding Usuario.Correo}"></TextBox>
-                <WrapPanel HorizontalAlignment="Center"
-                           Margin="20">
-                    <Button Padding="10,5"
-                            Command="{Binding GuardarCommand}">Guardar</Button>
-                    <Button Padding="10,5"
-                            Command="{Binding CambiarVistaCommand}"
-                            CommandParameter="Ver"
-                            Margin="10,0,0,0">Cancelar</Button>
-                </WrapPanel>
-            </StackPanel>
-        </DockPanel>
+        <local:EditarUsuarioView x:Key="Editar"/>
+        
         <DockPanel x:Key="Ver"
                    Background="GhostWhite">
             <Border Padding="10"
@@ -94,7 +73,7 @@
                                         Padding="0"
                                         Command="{Binding ElementName=ventana, 
                                         Path=DataContext.VerEditarCommand}"
-                                        CommandParameter="{Binding .}">
+                                        CommandParameter="{Binding Correo}">
                                     <fa:ImageAwesome Icon="Pencil"
                                                      Width="25"
                                                      Foreground="White"
@@ -175,6 +154,7 @@
                 <DockPanel>
                     <Button DockPanel.Dock="Right"
                             Padding="10,5"
+                            Foreground="White"
                             Command="{Binding CambiarVistaCommand}"
                             CommandParameter="Ver">Regresar</Button>
                     <TextBlock FontSize="20">Lista de bitacoras</TextBlock>

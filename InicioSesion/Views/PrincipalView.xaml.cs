@@ -36,5 +36,10 @@ namespace InicioSesion.Views
         {
             WindowState = WindowState.Minimized; 
         }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }

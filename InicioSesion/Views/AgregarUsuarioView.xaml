@@ -40,6 +40,14 @@
                    >Contraseña:</Label>
             <TextBox Margin="0,3"
                      Text="{Binding Usuario.Contrasena}"></TextBox>
+            <Label Margin="0,5"
+                   VerticalAlignment="Center"
+                   Foreground="Black">Rol:</Label>
+            <ComboBox ItemsSource="{Binding ListaRoles}"
+                      DisplayMemberPath="Nombre"
+                      SelectedIndex="0"
+                      x:Name="cmbRoles"
+                      SelectedValuePath="Id" />
             <TextBlock 
                        Text="{Binding Error}"
                        FontSize="15"
@@ -54,12 +62,15 @@
                         Height="50"
                         Foreground="GhostWhite"
                         FontSize="20"
+                        CommandParameter="{Binding ElementName=cmbRoles, Path=SelectedValue}"
                         Command="{Binding CrearNuevoUsuarioCommand}">Agregar</Button>
                 <Button Padding="10,5"
                         Width="100"
                         Height="50"
                         Foreground="GhostWhite"
                         FontSize="20"
+                        Background="Maroon"
+                        BorderThickness="0"
                         Command="{Binding CerrarSesionCommand}"
                         Margin="10,0,0,0">
                     Cancelar</Button>

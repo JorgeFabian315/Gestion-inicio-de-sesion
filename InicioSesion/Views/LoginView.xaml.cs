@@ -36,5 +36,10 @@ namespace InicioSesion.Views
             string x = Clipboard.GetText();
             txtCorreo.Text = x;
         }
+
+        private void pwb1_Loaded(object sender, RoutedEventArgs e)
+        {
+            pwb1.Clear();
+        }
     }
 }

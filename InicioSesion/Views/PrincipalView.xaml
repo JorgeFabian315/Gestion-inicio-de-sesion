@@ -15,7 +15,7 @@
         WindowStartupLocation="CenterScreen"
         Name="ventana"
         Background="Transparent"
-        Height="650"
+        Height="700"
         Topmost="False"
         ShowInTaskbar="True"
         Width="1000">
@@ -122,6 +122,7 @@
                                FontSize="15"
                                Foreground="Yellow">
                          <Hyperlink Command="{Binding CerrarSesionCommand}"
+                                    Click="Hyperlink_Click"
                                     Foreground="Yellow">Cerrar sesión
                          </Hyperlink></TextBlock>
                 </StackPanel>
